@@ -87,6 +87,9 @@ $config = [
         'progress' => [
             'class' => 'app\modules\progress\Module',
         ],
+        'api' => [
+            'class' => 'app\modules\api\Module',
+        ],
     ],
     'params' => $params,
 ];

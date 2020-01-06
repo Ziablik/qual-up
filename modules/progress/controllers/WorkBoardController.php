@@ -16,18 +16,19 @@ class WorkBoardController extends \yii\web\Controller
     public function actionIndex()
     {
         $user = User::findOne(['id' => \Yii::$app->user->id]);
-//        VarDumper::dump($user->userPrograms[0],10,true);
-        $programsProgress = [];
-        foreach ($user->userPrograms as $userProgram){
-//            VarDumper::dump($userProgram->program,10,true);
-            $programsProgress[] = [
-                'program' => $userProgram->program,
-                'progress' => [
-                    'program_progress' => $userProgram,
-
-                    ]
-                ];
-        }
+//        $programsProgress = [];
+//        foreach ($user->userPrograms as $userProgram){
+//            $programsProgress[] = [
+//                'program' => $userProgram->program,
+//                'progress' => [
+//                    'program_progress' => $userProgram->progress,
+//                    'themes_progress' => [],
+//                    ]
+//                ];
+//            foreach ($userProgram->program->themes as $theme) {
+//                $programsProgress['progress']['themes_progress'][] = $theme
+//            }
+//        }
         return $this->render('index', [
             'program' => $user->userPrograms[0]->program,
         ]);

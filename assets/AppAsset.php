@@ -26,6 +26,8 @@ class AppAsset extends AssetBundle
     ];
     public $depends = [
         'yii\web\YiiAsset',
-        'yii\bootstrap\BootstrapAsset',
+        'yiister\gentelella\assets\Asset',
+        'app\assets\BootstrapSwitch',       // Add this
+//        'yii\bootstrap\BootstrapAsset',  // Remove this
     ];
 }

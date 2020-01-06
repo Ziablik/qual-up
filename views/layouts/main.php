@@ -10,8 +10,7 @@ use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
-$bundle = yiister\gentelella\assets\Asset::register($this);
-
+AppAsset::register($this)
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>

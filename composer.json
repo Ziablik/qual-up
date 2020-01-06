@@ -23,7 +23,9 @@
         "yiister/yii2-gentelella": "~1.0",
         "kartik-v/yii2-widget-fileinput": "@dev",
         "mihaildev/yii2-ckeditor": "*",
-        "lesha724/yii2-document-viewer": "*"
+        "lesha724/yii2-document-viewer": "*",
+        "yiisoft/yii2-bootstrap4": "^2.0",
+        "hiqdev/yii2-bootstrap-switch": "^0.1.2"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
@@ -65,11 +67,5 @@
                 "config/web.php"
             ]
         }
-    },
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://asset-packagist.org"
-        }
-    ]
+    }
 }
