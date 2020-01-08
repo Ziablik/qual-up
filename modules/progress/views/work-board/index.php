@@ -21,8 +21,7 @@ $this->registerJs($script, yii\web\View::POS_READY);
             </div>
             <div class="x_content">
                 <div class="col-md-12">
-                    <h2>Презентация введения</h2>
-<!--                    <iframe src="http://docs.google.com/viewer?url=http://panel.origami-test.ru/uploads/files/$2y$13$orC/23/zBSjv08axk.pdf&embedded=true" style="width:600px; height:500px;" frameborder="0"></iframe>-->
+                    <h2><?= \yii\helpers\Html::a('Презентация введения', $program->presentation0->path, ['target' => '_blank']) ?></h2>
                     <?php
                     $isAccess = true;
                     foreach ($program->themes as $theme):
@@ -31,13 +30,13 @@ $this->registerJs($script, yii\web\View::POS_READY);
                                 'header' => $theme->name,
                                 'icon' => $isAccess?'arrow-down':'close',
                                 'expandable' => true,
-                                'hideArrow' => !$isAccess,
+//                                'hideArrow' => !$isAccess,
                             ]
                         );
                     if ($theme->userThemes[0]->progress != 100)
                         $isAccess = false;
                     ?>
-                    <h2>Презентация к теме</h2>
+                    <h2><?= \yii\helpers\Html::a('Презентация к теме', $theme->presentation0->path, ['target' => '_blank']) ?></h2>
                     <ul class="list-group">
                         <?php foreach ($theme->questions as $question): ?>
                         <li class="list-group-item">
@@ -53,9 +52,6 @@ $this->registerJs($script, yii\web\View::POS_READY);
                         <?php endforeach; ?>
                     </ul>
                     <h2><?= \yii\helpers\Html::a('Ссылка на тест', 'test?id='.$theme->tests[0]->id)?></h2>
-                    <div id="w1" class="active progress-striped progress">
-                        <div class="progress-bar-success progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:<?= $theme->userThemes[0]->progress ?>%"><span class="sr-only"></span></div>
-                    </div>
                     <div class="progress">
                         <div class="progress-bar" role="progressbar" style="width: <?= $theme->userThemes[0]->progress ?>%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"><?= $theme->userThemes[0]->progress ?>%</div>
                     </div>

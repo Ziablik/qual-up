@@ -15,7 +15,7 @@ use app\modules\progress\models\UserTheme;
  * @property int $program_id
  *
  * @property Questions[] $questions
- * @property Files $presentation
+ * @property Files $presentation0
  * @property Programs $program
  * @property Tests[] $tests
  * @property UserTheme[] $userThemes
@@ -73,7 +73,7 @@ class Themes extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPresentation()
+    public function getPresentation0()
     {
         return $this->hasOne(Files::className(), ['id' => 'presentation_id']);
     }

@@ -24,7 +24,7 @@
         "kartik-v/yii2-widget-fileinput": "@dev",
         "mihaildev/yii2-ckeditor": "*",
         "lesha724/yii2-document-viewer": "*",
-        "yiisoft/yii2-bootstrap4": "^2.0",
+        "yiisoft/yii2-bootstrap4": "~2.0.6",
         "hiqdev/yii2-bootstrap-switch": "^0.1.2"
     },
     "require-dev": {
@@ -66,6 +66,16 @@
             "generateCookieValidationKey": [
                 "config/web.php"
             ]
+        },
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ]
 }
