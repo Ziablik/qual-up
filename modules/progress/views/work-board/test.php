@@ -6,7 +6,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use bupy7\flexslider\FlexSlider;
 
 $script = <<< JS
     $('div.next').click(function(event) {

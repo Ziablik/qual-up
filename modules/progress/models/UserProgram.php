@@ -15,8 +15,8 @@ use yii\db\Expression;
  * @property int $user_id
  * @property int $program_id
  * @property int $progress
- * @property int $created_at
- * @property int $updated_at
+ * @property string $created_at
+ * @property string $updated_at
  *
  * @property Programs $program
  * @property User $user
@@ -49,7 +49,8 @@ class UserProgram extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'program_id', 'progress', 'created_at', 'updated_at'], 'integer'],
+            [['user_id', 'program_id', 'progress'], 'integer'],
+            [['created_at', 'updated_at'], 'safe'],
             [['program_id'], 'exist', 'skipOnError' => true, 'targetClass' => Programs::className(), 'targetAttribute' => ['program_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];

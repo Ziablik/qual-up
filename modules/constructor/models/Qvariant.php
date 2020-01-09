@@ -2,7 +2,9 @@
 
 namespace app\modules\constructor\models;
 
+use app\modules\progress\models\UserTquest;
 use Yii;
+
 
 /**
  * This is the model class for table "qvariant".
@@ -14,6 +16,7 @@ use Yii;
  * @property Tquest $tquest
  * @property Tquest[] $tquests
  * @property UserTquest[] $userTquests
+ * @property UserTquest[] $userTquests0
  */
 class Qvariant extends \yii\db\ActiveRecord
 {
@@ -70,6 +73,14 @@ class Qvariant extends \yii\db\ActiveRecord
      */
     public function getUserTquests()
     {
-        return $this->hasMany(UserTquest::className(), ['answer_by_user' => 'id']);
+        return $this->hasMany(UserTquest::className(), ['finish_answer_by_user' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserTquests0()
+    {
+        return $this->hasMany(UserTquest::className(), ['common_answer_by_user' => 'id']);
     }
 }

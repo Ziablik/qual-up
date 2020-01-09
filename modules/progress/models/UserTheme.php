@@ -15,8 +15,9 @@ use yii\db\Expression;
  * @property int $user_id
  * @property int $theme_id
  * @property int $progress
- * @property int $created_at
- * @property int $updated_at
+ * @property int $presentation_success
+ * @property string $created_at
+ * @property string $updated_at
  *
  * @property Themes $theme
  * @property User $user
@@ -49,7 +50,8 @@ class UserTheme extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'theme_id', 'progress', 'created_at', 'updated_at'], 'integer'],
+            [['user_id', 'theme_id', 'progress', 'presentation_success'], 'integer'],
+            [['created_at', 'updated_at'], 'safe'],
             [['theme_id'], 'exist', 'skipOnError' => true, 'targetClass' => Themes::className(), 'targetAttribute' => ['theme_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -91,6 +93,9 @@ class UserTheme extends \yii\db\ActiveRecord
      * @return bool
      */
     private function calculateProgress(){
+        $user = $this->user;
+        $user_question_model = $user->userQuestions;
+        $user_test_model = $user->userTests;
 
         return true;
     }
