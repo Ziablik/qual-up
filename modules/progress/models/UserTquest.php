@@ -6,6 +6,8 @@ use Yii;
 use dektrium\user\models\User;
 use app\modules\constructor\models\Qvariant;
 use app\modules\constructor\models\Tquest;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "user_tquest".
@@ -32,6 +34,18 @@ class UserTquest extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'user_tquest';
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class'              => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'value'              => new Expression('NOW()'),
+            ],
+        ];
     }
 
     /**

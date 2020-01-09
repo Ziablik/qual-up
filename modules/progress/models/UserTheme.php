@@ -5,6 +5,8 @@ namespace app\modules\progress\models;
 use Yii;
 use dektrium\user\models\User;
 use app\modules\constructor\models\Themes;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "user_theme".
@@ -27,6 +29,18 @@ class UserTheme extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'user_theme';
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class'              => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'value'              => new Expression('NOW()'),
+            ],
+        ];
     }
 
     /**
@@ -70,5 +84,14 @@ class UserTheme extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    /**
+     * var
+     * @return bool
+     */
+    private function calculateProgress(){
+
+        return true;
     }
 }

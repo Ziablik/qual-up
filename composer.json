@@ -25,7 +25,8 @@
         "mihaildev/yii2-ckeditor": "*",
         "lesha724/yii2-document-viewer": "*",
         "yiisoft/yii2-bootstrap4": "~2.0.6",
-        "hiqdev/yii2-bootstrap-switch": "^0.1.2"
+        "hiqdev/yii2-bootstrap-switch": "^0.1.2",
+        "bupy7/yii2-flexslider": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

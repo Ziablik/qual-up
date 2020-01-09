@@ -2,13 +2,16 @@
 
 namespace app\modules\progress\controllers;
 
+use app\modules\constructor\models\Qvariant;
 use app\modules\constructor\models\Tests;
+use app\modules\constructor\models\Tquest;
 use app\modules\progress\models\User;
 use app\modules\progress\models\UserProgram;
 use app\modules\progress\models\UserQuestion;
 use app\modules\progress\models\UserTest;
 use app\modules\progress\models\UserTheme;
 use app\modules\progress\models\UserTquest;
+use Yii;
 use yii\helpers\VarDumper;
 
 class WorkBoardController extends \yii\web\Controller
@@ -34,9 +37,29 @@ class WorkBoardController extends \yii\web\Controller
         ]);
     }
 
-    public function actionTest($id = 1)
+    public function actionTest($test_id = 1)
     {
-        $test = Tests::findOne(['id' => $id]);
+        if(Yii::$app->request->post()) {
+            foreach (Yii::$app->request->post() as $key=>$answer) {
+                if($key == '_csrf')
+                    continue;
+
+                $quset_variant_model = Qvariant::findOne(['id' => $answer]);
+                $user_tquest_model = UserTquest::find()->where(['user_id' => Yii::$app->user->id])
+                    ->andWhere(['tquest_id' => $quset_variant_model->tquest->id])
+                    ->one();
+                $user_tquest_model->answer_by_user = $answer;
+                $user_tquest_model->common_flag = 1;
+                $user_tquest_model->save();
+            }
+
+            $user_theme_model = UserTheme::find()->where(['user_id' => Yii::$app->user->id])
+                ->andWhere(['theme_id' => $user_tquest_model->tquest->test_id])
+                ->one();
+            VarDumper::dump($user_theme_model,10,true);
+
+        }
+        $test = Tests::findOne(['id' => $test_id]);
         return $this->render('test', [
             'test' => $test,
         ]);

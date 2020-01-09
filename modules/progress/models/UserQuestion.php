@@ -5,6 +5,8 @@ namespace app\modules\progress\models;
 use Yii;
 use dektrium\user\models\User;
 use app\modules\constructor\models\Questions;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "user_question".
@@ -27,6 +29,18 @@ class UserQuestion extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'user_question';
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class'              => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'value'              => new Expression('NOW()'),
+            ],
+        ];
     }
 
     /**

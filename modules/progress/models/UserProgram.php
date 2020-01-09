@@ -5,6 +5,8 @@ namespace app\modules\progress\models;
 use Yii;
 use dektrium\user\models\User;
 use app\modules\constructor\models\Programs;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "user_program".
@@ -27,6 +29,18 @@ class UserProgram extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'user_program';
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class'              => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'value'              => new Expression('NOW()'),
+            ],
+        ];
     }
 
     /**
