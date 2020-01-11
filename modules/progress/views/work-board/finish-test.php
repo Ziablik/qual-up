@@ -25,14 +25,14 @@ $this->registerJs($script, yii\web\View::POS_READY)
 <?= Html::beginForm('', 'post'); ?>
 
 <?php
-    $count = 1;
-    foreach ($test->tquests as $tquest){
-        $qvariants_shuffle = $tquest->qvariants;
-        shuffle($qvariants_shuffle);
-        $button = ($count < count($test->tquests))?'<div class="btn btn-info next">Далее</div>':'<div class="form-group">'.Html::submitButton('Завершить', ['class' => 'btn btn-success']).'</div>';
-        $answers_html = '';
-        foreach ($qvariants_shuffle as $qvariant){
-            $answers_html .= '
+$count = 1;
+foreach ($test as $tquest){
+    $qvariants_shuffle = $tquest->qvariants;
+    shuffle($qvariants_shuffle);
+    $button = ($count < count($test))?'<div class="btn btn-info next">Далее</div>':'<div class="form-group">'.Html::submitButton('Завершить', ['class' => 'btn btn-success']).'</div>';
+    $answers_html = '';
+    foreach ($qvariants_shuffle as $qvariant){
+        $answers_html .= '
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="tquest_id='. $tquest->id .'" value='. $qvariant->id .' checked>
                                 <label class="form-check-label" for="gridRadios1">
@@ -40,8 +40,8 @@ $this->registerJs($script, yii\web\View::POS_READY)
                                 </label>
                             </div>
         ';
-        }
-        array_push($carousel_html, '
+    }
+    array_push($carousel_html, '
         <div class="row">
             <div class="col-md-1"></div>
             <div class="col-md-10">
@@ -49,7 +49,7 @@ $this->registerJs($script, yii\web\View::POS_READY)
                     <div class="x_title">
                         <h1>
                             <i class="fa fa-question-circle"></i>'.
-                            $tquest->description.'
+        $tquest->description.'
                         </h1>
                         <div class="clearfix"></div>
                     </div>
@@ -57,24 +57,24 @@ $this->registerJs($script, yii\web\View::POS_READY)
                         <fieldset class="form-group">
                             <div class="row">
                                 <div class="col-md-10">'.
-                                    $answers_html.'
+        $answers_html.'
                                 </div>
                             </div>
                         </fieldset>
                     </div>
                 </div>'.
-                $button.'
+        $button.'
             </div>
         </div>'
-        );
-        $count+=1;
-    }
+    );
+    $count+=1;
+}
 ?>
 
 <?= yii\bootstrap\Carousel::widget([
-        'items' => $carousel_html,
-        'clientOptions' => ['interval' => false, 'wrap' => false],
-        'controls' => false
+    'items' => $carousel_html,
+    'clientOptions' => ['interval' => false, 'wrap' => false],
+    'controls' => false
 ]); ?>
 
 <?php Html::endForm(); ?>

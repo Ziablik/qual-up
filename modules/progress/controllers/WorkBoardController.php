@@ -2,8 +2,10 @@
 
 namespace app\modules\progress\controllers;
 
+use app\modules\constructor\models\Programs;
 use app\modules\constructor\models\Qvariant;
 use app\modules\constructor\models\Tests;
+use app\modules\constructor\models\Themes;
 use app\modules\constructor\models\Tquest;
 use app\modules\progress\models\User;
 use app\modules\progress\models\UserProgram;
@@ -13,6 +15,7 @@ use app\modules\progress\models\UserTheme;
 use app\modules\progress\models\UserTquest;
 use Yii;
 use yii\base\ErrorException;
+use yii\base\Theme;
 use yii\helpers\VarDumper;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -60,14 +63,13 @@ class WorkBoardController extends \yii\web\Controller
             ->andWhere(['test_id' => $test_id])
             ->one();
 
-//        if ($user_test_model->test_points != null)
-//            throw new ForbiddenHttpException( 'Вы уже проходили данный тест', 403);
+        if ($user_test_model->test_points != null)
+            throw new ForbiddenHttpException( 'Вы уже проходили данный тест', 403);
 
         if(Yii::$app->request->post()) {
             foreach (Yii::$app->request->post() as $key=>$answer) {
 
                 if($key == '_csrf') {
-                    unset(Yii::$app->request->post()['_csrf']);
                     continue;
                 }
 
@@ -76,7 +78,7 @@ class WorkBoardController extends \yii\web\Controller
                     ->andWhere(['tquest_id' => $quest_variant_model->tquest->id])
                     ->one();
                 $user_tquest_model->common_answer_by_user = $answer;
-//                $user_tquest_model->save();
+                $user_tquest_model->save();
             }
 
             $user_test_model = UserTest::find()
@@ -89,7 +91,13 @@ class WorkBoardController extends \yii\web\Controller
                 ->andWhere(['theme_id' => $test_id])
                 ->one();
             $user_theme_model->progress += 40;
-//            $user_theme_model->save();
+            $user_theme_model->save();
+
+            $user_program_model = UserProgram::find()
+                ->where(['user_id' => Yii::$app->user->id])
+                ->andWhere(['program_id' => $test->theme->program->id])
+                ->one();
+            $user_program_model->calculateProgress();
 
             return $this->render('test-check', [
                 'test' => $test,
@@ -99,6 +107,65 @@ class WorkBoardController extends \yii\web\Controller
 
         return $this->render('test', [
             'test' => $test,
+        ]);
+    }
+
+    public function actionFinishTest($program_id = null){
+        $user_program_model = UserProgram::find()
+            ->where(['user_id' => Yii::$app->user->id])
+            ->andWhere(['program_id' => $program_id])
+            ->one();
+
+        $user_test_model = UserTest::find()
+            ->where(['user_id' => Yii::$app->user->id])
+            ->andWhere(['test_type' => 'finish_test'])
+            ->one();
+
+        if ($user_program_model->finish_test_is_complete == 1)
+            throw new ForbiddenHttpException( 'Вы уже прошли данный тест', 403);
+        elseif ($user_test_model->count_attempts == 2)
+            throw new ForbiddenHttpException( 'У вас закончились попытки, пожалуйста обратитесь в поддержку', 403);
+
+
+        $program_model = Programs::findOne(['id' => $program_id]);
+        $finish_test = [];
+        foreach ($program_model->themes as $theme){
+            foreach ($theme->tests[0]->tquests as $tquest){
+                array_push($finish_test, $tquest);
+            }
+        }
+        shuffle($finish_test);
+
+        if(Yii::$app->request->post()) {
+            foreach (Yii::$app->request->post() as $key=>$answer) {
+
+                if($key == '_csrf') {
+                    continue;
+                }
+
+                $quest_variant_model = Qvariant::findOne(['id' => $answer]);
+                $user_tquest_model = UserTquest::find()->where(['user_id' => Yii::$app->user->id])
+                    ->andWhere(['tquest_id' => $quest_variant_model->tquest->id])
+                    ->one();
+                $user_tquest_model->finish_answer_by_user = $answer;
+                $user_tquest_model->save();
+            }
+
+            $answers_by_user = $user_test_model->calculateFinishTest($finish_test ,Yii::$app->request->post());
+
+            if ($user_test_model->test_points/$user_test_model->count_quests >= 0.7){
+                $user_program_model->finish_test_is_complete = 1;
+                $user_program_model->save();
+            }
+
+            return $this->render('test-result', [
+                'answers_by_user' => $answers_by_user,
+                'user_test_model' => $user_test_model
+            ]);
+        }
+
+        return $this->render('finish-test', [
+            'test' => $finish_test,
         ]);
     }
 
@@ -119,6 +186,14 @@ class WorkBoardController extends \yii\web\Controller
 
             $user_theme_model->progress += 30/count($user_theme_model->theme->questions);
             $user_theme_model->save();
+
+            $theme_model = Themes::findOne(['id' => $user_theme_model->theme_id]);
+            $user_program_model = UserProgram::find()
+                ->where(['user_id' => Yii::$app->user->id])
+                ->andWhere(['program_id' => $theme_model->program->id])
+                ->one();
+            $user_program_model->calculateProgress();
+
             return json_encode(['progress' => $user_theme_model->progress, 'theme_id' => $user_theme_model->theme_id]);
         }
         return new \Exception('Пустой POST');
@@ -134,6 +209,13 @@ class WorkBoardController extends \yii\web\Controller
                 $user_theme_model->presentation_success = 1;
                 $user_theme_model->progress += 30;
                 $user_theme_model->save();
+
+                $theme_model = Themes::findOne(['id' => $user_theme_model->theme_id]);
+                $user_program_model = UserProgram::find()
+                    ->where(['user_id' => Yii::$app->user->id])
+                    ->andWhere(['program_id' => $theme_model->program->id])
+                    ->one();
+                $user_program_model->calculateProgress();
             }
 
             return json_encode(['progress' => $user_theme_model->progress, 'theme_id' => $user_theme_model->theme_id]);

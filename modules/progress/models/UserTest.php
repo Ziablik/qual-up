@@ -19,6 +19,7 @@ use yii\helpers\VarDumper;
  * @property string $test_type
  * @property int $test_points
  * @property int $count_attempts
+ * @property int $count_quests
  * @property string $created_at
  * @property string $updated_at
  *
@@ -53,7 +54,7 @@ class UserTest extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'test_id', 'test_points', 'count_attempts'], 'integer'],
+            [['user_id', 'test_id', 'test_points', 'count_attempts', 'count_quests'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['test_type'], 'string', 'max' => 255],
             [['test_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tests::className(), 'targetAttribute' => ['test_id' => 'id']],
@@ -72,6 +73,8 @@ class UserTest extends \yii\db\ActiveRecord
             'test_id' => 'Test ID',
             'test_type' => 'Test Type',
             'test_points' => 'Test Points',
+            'count_attempts' => 'Count Attempts',
+            'count_quests' => 'Count Quests',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -103,7 +106,8 @@ class UserTest extends \yii\db\ActiveRecord
 
         $this->test_points = count($right_answers_by_user);
         $this->count_attempts += 1;
-//        $this->save();
+        $this->count_quests = count($right_answers);
+        $this->save();
 
         return ['right' => $right_answers_by_user, 'wrong' => $wrong_answers_by_user];
     }
@@ -112,6 +116,29 @@ class UserTest extends \yii\db\ActiveRecord
         $test_model = Tests::findOne(['id' => $test_id]);
         $right_answers = [];
         foreach ($test_model->tquests as $tquest_model){
+            $right_answers['tquest_id='.$tquest_model->id] = $tquest_model->right_variant;
+        }
+        return $right_answers;
+    }
+
+    public function calculateFinishTest($finish_test, $answers_by_user){
+        unset($answers_by_user['_csrf']);
+
+        $right_answers = $this->getRightAnswersForFinishTest($finish_test);
+        $right_answers_by_user = array_intersect($answers_by_user, $right_answers);
+        $wrong_answers_by_user = array_diff($answers_by_user, $right_answers);
+
+        $this->test_points = count($right_answers_by_user);
+        $this->count_attempts += 1;
+        $this->count_quests = count($right_answers);
+        $this->save();
+
+        return ['right' => $right_answers_by_user, 'wrong' => $wrong_answers_by_user];
+    }
+
+    private function getRightAnswersForFinishTest($finish_test){
+        $right_answers = [];
+        foreach ($finish_test as $tquest_model){
             $right_answers['tquest_id='.$tquest_model->id] = $tquest_model->right_variant;
         }
         return $right_answers;
