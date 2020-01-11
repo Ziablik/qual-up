@@ -64,7 +64,8 @@ class SiteController extends Controller
         if(!Yii::$app->user->can('admin')){
             return $this->redirect('/progress/work-board/index');
         }
-        return $this->render('index');
+        else
+            return $this->redirect('/progress/user-program/index');
     }
 
     /**
