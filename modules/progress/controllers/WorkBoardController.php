@@ -223,24 +223,25 @@ class WorkBoardController extends \yii\web\Controller
         return true;
     }
 
-    public static function actionProgressGenerate()
+    public static function actionProgressGenerate($user_id, $user_program)
     {
         //Создаем прогресс по программе для пользователя
-        $user_program = new UserProgram();
-        $user_program->user_id = \Yii::$app->user->id;
-        $user_program->program_id = 1;
-        $user_program->save();
+        $user_finish_test = new UserTest();
+        $user_finish_test->user_id = $user_id;
+        $user_finish_test->test_type = 'finish_test';
+        $user_finish_test->count_quests = 0;
+
         //Создаем прогресс по каждой теме программы
         foreach ($user_program->program->themes as $theme){
 
             $user_theme = new UserTheme();
-            $user_theme->user_id = \Yii::$app->user->id;
+            $user_theme->user_id = $user_id;
             $user_theme->theme_id = $theme->id;
             $user_theme->save();
             //Создаем прогресс по каждому заданию темы
             foreach ($user_theme->theme->questions as $question){
                 $user_question = new UserQuestion();
-                $user_question->user_id = \Yii::$app->user->id;
+                $user_question->user_id = $user_id;
                 $user_question->question_id = $question->id;
                 $user_question->save();
             }
@@ -248,17 +249,26 @@ class WorkBoardController extends \yii\web\Controller
             foreach ($user_theme->theme->tests as $test){
 
                 $user_test = new UserTest();
-                $user_test->user_id = \Yii::$app->user->id;
+                $user_test->user_id = $user_id;
                 $user_test->test_id = $test->id;
-                $user_test->save();
+                $user_test->test_type = 'common_test';
+                $user_test->count_quests = 0;
                 //Создаем флажок по каждому ответу на вопрос теста
                 foreach ($user_test->test->tquests as $tquest){
+
+                    $user_test->count_quests += 1;
+                    $user_finish_test->count_quests += 1;
+
                     $user_tquest = new UserTquest();
-                    $user_tquest->user_id = \Yii::$app->user->id;
+                    $user_tquest->user_id = $user_id;
                     $user_tquest->tquest_id = $tquest->id;
                     $user_tquest->save();
                 }
+
+                $user_test->save();
             }
         }
+
+        $user_finish_test->save();
     }
 }

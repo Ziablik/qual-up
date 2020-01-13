@@ -7,16 +7,12 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\modules\progress\models\search\UserProgramSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'User Programs';
+$this->title = 'Прогресс пользователей';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-program-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Create User Program', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
     <?php Pjax::begin(); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -27,18 +23,21 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'user_id',
-            'program_id',
+            'user.username',
+            'program.name',
             'progress',
-            'finish_test_is_complete',
-            //'created_at',
-            //'updated_at',
+            [
+                'attribute' => 'finish_test_is_complete',
+                'content' => function($model){
+                    return $model->finish_test_is_complete?'<i class="fa fa-check text-success" aria-hidden="true"></i>':'<i class="fa fa-times-circle text-danger" aria-hidden="true"></i>';
+                }
+            ],
+            'created_at',
+            'updated_at',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
-
     <?php Pjax::end(); ?>
 
 </div>

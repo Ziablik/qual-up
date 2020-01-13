@@ -6,6 +6,7 @@
 use app\modules\progress\models\UserProgram;
 use app\modules\progress\models\UserQuestion;
 use app\modules\progress\models\UserTest;
+use app\modules\progress\models\UserTheme;
 use yii\helpers\Html;
 use yiister\gentelella\widgets\Panel;
 $script = <<< JS
@@ -73,7 +74,13 @@ $this->registerJs($script, yii\web\View::POS_READY);
                                 'hideArrow' => !$isAccess,
                             ]
                         );
-                    if ($theme->userThemes[0]->progress != 100)
+
+                        $user_theme_model = UserTheme::find()
+                            ->where(['theme_id' => $theme->id])
+                            ->andWhere(['user_id' => Yii::$app->user->id])
+                            ->one();
+
+                    if ($user_theme_model->progress != 100)
                         $isAccess = false;
                     ?>
                     <h2><?= \yii\helpers\Html::a('Презентация к теме', $theme->presentation0->path, ['target' => '_blank', 'theme' => $theme->id]) ?></h2>
@@ -100,7 +107,7 @@ $this->registerJs($script, yii\web\View::POS_READY);
                     </ul>
                     <h2><?= \yii\helpers\Html::a('Ссылка на тест', 'test?test_id='.$theme->tests[0]->id)?></h2>
                     <div class="progress">
-                        <div class="progress-bar" role="progressbar" style="width: <?= $theme->userThemes[0]->progress ?>%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" theme=<?= $theme->id ?>><?= $theme->userThemes[0]->progress ?>%</div>
+                        <div class="progress-bar" role="progressbar" style="width: <?= $user_theme_model->progress ?>%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" theme=<?= $theme->id ?>><?= $user_theme_model->progress ?>%</div>
                     </div>
                     <?php Panel::end();?>
                     <?php endforeach;?>
@@ -123,16 +130,19 @@ $this->registerJs($script, yii\web\View::POS_READY);
                                 switch ($user_test_model->count_attempts){
                                     case 0:
                                         echo Html::a(
-                                            'Итоговый тест (доступен, осталась 2 попытки)',
+                                            'Итоговый тест (доступен, осталось 2 попытки)',
                                             'finish-test?program_id=' . $program->id, ['class' => 'text-success']);
+                                        break;
                                     case 1:
                                         echo Html::a(
                                             'Итоговый тест (доступен, осталась 1 попытка)',
                                             'finish-test?program_id=' . $program->id, ['class' => 'text-success']);
+                                        break;
                                     case 2:
                                         echo Html::a(
-                                            'Итоговый тест (доступен, осталась 0 попыток)',
+                                            'Итоговый тест (доступен, осталось 0 попыток)',
                                             'finish-test?program_id=' . $program->id, ['class' => 'text-success']);
+                                        break;
                                 };
                             }
                             else

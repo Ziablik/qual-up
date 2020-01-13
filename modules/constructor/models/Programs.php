@@ -51,7 +51,7 @@ class Programs extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'id' => 'Название программы',
             'name' => 'Название образовательной программы',
             'description' => 'Описание образовательной программы',
             'image' => 'Изображение',

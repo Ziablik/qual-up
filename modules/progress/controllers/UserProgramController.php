@@ -35,6 +35,7 @@ class UserProgramController extends Controller
      */
     public function actionIndex()
     {
+//        WorkBoardController::actionProgressGenerate(8, 1);
         $searchModel = new UserProgramSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 

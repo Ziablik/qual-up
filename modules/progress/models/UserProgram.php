@@ -68,11 +68,11 @@ class UserProgram extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'user_id' => 'User ID',
-            'program_id' => 'Program ID',
-            'progress' => 'Progress',
-            'finish_test_is_complete' => 'Finish Test Is Complete',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'program_id' => 'Название программы',
+            'progress' => 'Прогресс, %',
+            'finish_test_is_complete' => 'Итоговый тест',
+            'created_at' => 'Дата начала',
+            'updated_at' => 'Дата последних действий',
         ];
     }
 

@@ -28,7 +28,16 @@ $config = [
             // send all mails to a file by default. You have to set
             // 'useFileTransport' to false and configure a transport
             // for the mailer to send real emails.
-            'useFileTransport' => true,
+            'useFileTransport' => false,
+
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'smtp.yandex.ru',
+                'username' => 'panel-dev@yandex.ru',
+                'password' => 'o0c8v7setye56s',
+                'port' => '465',
+                'encryption' => 'ssl'
+            ]
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -58,13 +67,13 @@ $config = [
         ],
         'user' => [
             'class' => 'dektrium\user\Module',
-//            'mailer' => [
-//                'sender'                => 'panel-dev@yandex.ru', // or ['no-reply@myhost.com' => 'Sender name']
-//                'welcomeSubject'        => 'Welcome subject',
-//                'confirmationSubject'   => 'Confirmation subject',
-//                'reconfirmationSubject' => 'Email change subject',
-//                'recoverySubject'       => 'Recovery subject',
-//            ],
+            'mailer' => [
+                'sender'                => 'panel-dev@yandex.ru', // or ['no-reply@myhost.com' => 'Sender name']
+                'welcomeSubject'        => 'Welcome subject',
+                'confirmationSubject'   => 'Confirmation subject',
+                'reconfirmationSubject' => 'Email change subject',
+                'recoverySubject'       => 'Recovery subject',
+            ],
             'controllerMap' => [
                 'security' => [
                     'class' => 'dektrium\user\controllers\SecurityController',
